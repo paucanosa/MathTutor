@@ -9,7 +9,7 @@ val Idle: State = state {
         furhat.setVoice(Language.ENGLISH_US, Gender.MALE)
         if (users.count > 0) {
             furhat.attend(users.random)
-            goto(Start)
+            goto(InitState)
         }
     }
 
@@ -19,7 +19,7 @@ val Idle: State = state {
 
     onUserEnter {
         furhat.attend(it)
-        goto(Start)
+        goto(InitState)
     }
 }
 
@@ -29,7 +29,7 @@ val Interaction: State = state {
         if (users.count > 0) {
             if (it == users.current) {
                 furhat.attend(users.other)
-                goto(Start)
+                goto(InitState)
             } else {
                 furhat.glance(it)
             }
