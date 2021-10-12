@@ -22,7 +22,7 @@ val BeginExercises: State = state(Interaction) {
     }
 }
 val EasyExercises: State = state(Interaction){
-    val index = (0..easy.size).random()
+    val index = (0..easy.size-1).random()
     onEntry{
         furhat.ask("Let's practice solving an easy division exercises. " +
                 "What is " + easy[index][0] + " divided by " + easy[index][1] + "?"
@@ -41,7 +41,7 @@ val EasyExercises: State = state(Interaction){
     }
 }
 val MediumExercises: State = state(Interaction){
-    val index = (0..medium.size).random()
+    val index = (0..medium.size-1).random()
     onEntry{
         furhat.ask("Try to solve this medium difficulty division problem." +
                 "What is " + medium[index][0] + " divided by " + medium[index][1] + "?" +
