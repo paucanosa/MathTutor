@@ -29,7 +29,7 @@ val EasyExercises: State = state(Interaction){
         )
     }
     this.onResponse<Number> {
-        if(Number(it.intent.value!!)==Number(easy[index][3])) {
+        if(Number(it.intent.value!!)==Number(easy[index][2])) {
             random(furhat.say("Good!"), furhat.say("Great!"), furhat.say("Awesome!"))
             furhat.say("That is right, the correct answer is "+ easy[index][2] + "." +
                 "Now on to the medium level exercises")
@@ -49,7 +49,7 @@ val MediumExercises: State = state(Interaction){
         )
     }
     this.onResponse<Number> { // TODO: captured remainder as well for full answer and flow to be continued..
-        if(Number(it.intent.value!!)==Number(medium[index][3])) {
+        if(Number(it.intent.value!!)==Number(medium[index][2])) {
             random(furhat.say("Good!"), furhat.say("Great!"), furhat.say("Awesome!"))
             furhat.say("That is right, the correct answer is "+ easy[index][2] + "." +
                     "Now on to the hard level exercises")
