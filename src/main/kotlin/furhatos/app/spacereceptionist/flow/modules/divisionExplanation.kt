@@ -1,6 +1,7 @@
 
 package furhatos.app.spacereceptionist.flow
 
+import furhatos.app.spacereceptionist.flow.modules.BeginExam
 import furhatos.nlu.common.*
 import furhatos.flow.kotlin.*
 import kotlin.random.Random
@@ -41,7 +42,7 @@ val BeginExplanation: State = state(Interaction) {
 
 var ExplanationUnderstood: State = state(Interaction){
     onEntry {
-        furhat.ask("Do you want to try some exercises to practice?")
+        furhat.ask("Do you want to try some exercises to practice for the exam?")
     }
 
     this.onResponse<Yes> {
@@ -50,8 +51,8 @@ var ExplanationUnderstood: State = state(Interaction){
     }
 
     this.onResponse<No> {
-        furhat.say("I am afraid you need to practice a little bit before taking the exam. Let's get started!")
-        goto(BeginExercises)
+        furhat.say("Okay! I am afraid you need to practice a little bit before taking the exam. But if you want we can proceed to it now.")
+        goto(BeginExam)
     }
 }
 

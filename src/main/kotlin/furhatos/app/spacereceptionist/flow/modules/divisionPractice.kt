@@ -1,6 +1,7 @@
 
 package furhatos.app.spacereceptionist.flow
 
+import furhatos.app.spacereceptionist.flow.modules.BeginExam
 import furhatos.app.spacereceptionist.nlu.Confused
 import furhatos.app.spacereceptionist.nlu.DivisionAnswer
 import furhatos.nlu.common.*
@@ -94,6 +95,7 @@ val HardExercises: State = state(Interaction){
                 random(furhat.say("Good!"), furhat.say("Great!"), furhat.say("Awesome!"))
                 furhat.say("That is right, the correct answer is "+ hard[index][2] + ". With remainder of " +
                         hard[index][3]+ ". Now you can try taking the exam!")
+                goto(BeginExam)
             }else{
                 furhat.say("You got the quotient right, which is "+ hard[index][2] + ". " +
                         "But the remainder should be " + hard[index][3] + ".")

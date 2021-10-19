@@ -10,6 +10,7 @@ var User.currentFrustration by NullSafeUserDataDelegate { -1 }
 var User.failedExercises   by NullSafeUserDataDelegate { intArrayOf()}
 var User.passedExercises  by NullSafeUserDataDelegate { intArrayOf()}
 var User.attemptedExercises by NullSafeUserDataDelegate { intArrayOf()}
+var User.nCorrectExamQuestions by NullSafeUserDataDelegate { 0 }
 
 
 
