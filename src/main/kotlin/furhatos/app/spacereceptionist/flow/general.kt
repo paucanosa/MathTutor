@@ -1,5 +1,6 @@
 package furhatos.app.spacereceptionist.flow
 
+import furhatos.app.spacereceptionist.flow.modules.BeginExam
 import furhatos.flow.kotlin.*
 import furhatos.util.*
 

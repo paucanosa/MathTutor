@@ -2,6 +2,7 @@ package furhatos.app.spacereceptionist.flow.modules
 
 import furhatos.app.spacereceptionist.flow.*
 import furhatos.app.spacereceptionist.nlu.Confused
+import furhatos.app.spacereceptionist.nlu.UnwillingToContinue
 import furhatos.flow.kotlin.*
 import furhatos.nlu.common.No
 import furhatos.nlu.common.Number
@@ -27,6 +28,9 @@ val BeginExam: State = state(Interaction) {
         furhat.say("Don't worry, I will repeat it for you. I will ask you three different division exercises: the first one will have an easy difficulty, the second one a medium difficulty and the last one a hard difficulty. ");
         goto(ExamEasyExercice);
     }
+    this.onResponse<UnwillingToContinue> {
+        goto(UserCheerUp(this.thisState))
+    }
 }
 
 val ExamEasyExercice: State = state(Interaction){
@@ -48,6 +52,9 @@ val ExamEasyExercice: State = state(Interaction){
     this.onResponse<Confused> {
         furhat.say("Don't worry. I will repeat the question.")
         reentry()
+    }
+    this.onResponse<UnwillingToContinue> {
+        goto(UserCheerUp(this.thisState))
     }
 }
 
@@ -71,6 +78,9 @@ val ExamMediumExercice: State = state(Interaction){
         furhat.say("Don't worry. I will repeat the question.")
         reentry()
     }
+    this.onResponse<UnwillingToContinue> {
+        goto(UserCheerUp(this.thisState))
+    }
 }
 
 val ExamHardExercice: State = state(Interaction){
@@ -93,6 +103,9 @@ val ExamHardExercice: State = state(Interaction){
         furhat.say("Don't worry. I will repeat the question.")
         reentry()
     }
+    this.onResponse<UnwillingToContinue> {
+        goto(UserCheerUp(this.thisState))
+    }
 }
 
 val ExamEnd: State = state(Interaction){
@@ -102,6 +115,7 @@ val ExamEnd: State = state(Interaction){
         if (users.current.nCorrectExamQuestions == 3) {
             furhat.say("Well done!! All your answers were correct!")
             furhat.say("Congratulations! You already understand how the division works.")
+            terminate()
         }
         else if (users.current.nCorrectExamQuestions == 2) {
             furhat.say("Good job! You only made one mistake ")
@@ -122,5 +136,8 @@ val ExamEnd: State = state(Interaction){
     }
     this.onResponse<No> {
         furhat.say("No problem. See you in our next class.");
+    }
+    this.onResponse<UnwillingToContinue> {
+        goto(UserCheerUp(this.thisState))
     }
 }

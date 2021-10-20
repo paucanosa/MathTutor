@@ -2,7 +2,9 @@
 package furhatos.app.spacereceptionist.flow
 
 import furhatos.app.spacereceptionist.flow.modules.BeginExam
+import furhatos.app.spacereceptionist.flow.modules.UserCheerUp
 import furhatos.app.spacereceptionist.nlu.DivisionQuestion
+import furhatos.app.spacereceptionist.nlu.UnwillingToContinue
 import furhatos.nlu.common.*
 import furhatos.flow.kotlin.*
 import furhatos.nlu.common.Number
@@ -42,6 +44,10 @@ val BeginExplanation: State = state(Interaction) {
         furhat.say("Don't worry, I will use another example!");
         goto(AdditionalExplanation);
     }
+
+    this.onResponse<UnwillingToContinue> {
+        goto(UserCheerUp(this.thisState))
+    }
 }
 
 var ExplanationUnderstood: State = state(Interaction){
@@ -57,6 +63,9 @@ var ExplanationUnderstood: State = state(Interaction){
     this.onResponse<No> {
         furhat.say("Okay! I am afraid you need to practice a little bit before taking the exam. But if you want we can proceed to it now.")
         goto(BeginExam)
+    }
+    this.onResponse<UnwillingToContinue> {
+        goto(UserCheerUp(this.thisState))
     }
 }
 
@@ -89,6 +98,9 @@ var AdditionalExplanation: State = state(Interaction){
             reentry()
         }
 
+    }
+    this.onResponse<UnwillingToContinue> {
+        goto(UserCheerUp(this.thisState))
     }
 
 }
@@ -127,5 +139,8 @@ var TakeDivisionQuestion: State = state(Interaction){
             furhat.say { "For this lessen, we are solving division problems where both dividend and divisor are integers. Let's try again!" }
             reentry()
         }
+    }
+    this.onResponse<UnwillingToContinue> {
+        goto(UserCheerUp(this.thisState))
     }
 }

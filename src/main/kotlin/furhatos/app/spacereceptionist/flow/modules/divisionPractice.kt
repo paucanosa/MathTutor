@@ -2,8 +2,10 @@
 package furhatos.app.spacereceptionist.flow
 
 import furhatos.app.spacereceptionist.flow.modules.BeginExam
+import furhatos.app.spacereceptionist.flow.modules.UserCheerUp
 import furhatos.app.spacereceptionist.nlu.Confused
 import furhatos.app.spacereceptionist.nlu.DivisionAnswer
+import furhatos.app.spacereceptionist.nlu.UnwillingToContinue
 import furhatos.nlu.common.*
 import furhatos.flow.kotlin.*
 import furhatos.nlu.common.Number
@@ -39,14 +41,16 @@ val EasyExercises: State = state(Interaction){
                 "Now on to the medium level exercises")
             goto(MediumExercises)
         }else{
-            furhat.say("That is incorrect. The answer is " +  easy[index][2] +
-                        ".")
+            furhat.say("That is incorrect. The answer is " +  easy[index][2] +".")
             goto(explainIncorrectAnswer(thisState, index, easy))
         }
     }
     this.onResponse<Confused> {
         furhat.say("Don't worry. I will explain the solution to you.")
         goto(explainIncorrectAnswer(thisState, index, easy))
+    }
+    this.onResponse<UnwillingToContinue> {
+        goto(UserCheerUp(this.thisState))
     }
 }
 
@@ -80,6 +84,9 @@ val MediumExercises: State = state(Interaction){
     this.onResponse<Confused> {
         furhat.say("Don't worry. I will explain the solution to you.")
         goto(explainIncorrectAnswer(thisState, index, medium))
+    }
+    this.onResponse<UnwillingToContinue> {
+        goto(UserCheerUp(this.thisState))
     }
 }
 
@@ -115,6 +122,9 @@ val HardExercises: State = state(Interaction){
         furhat.say("Don't worry. I will explain the solution to you.")
         goto(explainIncorrectAnswer(thisState, index, hard))
     }
+    this.onResponse<UnwillingToContinue> {
+        goto(UserCheerUp(this.thisState))
+    }
 }
 
 fun explainIncorrectAnswer(stateOrigin: State, index: Int, exerciseList: Array<IntArray>): State = state(Interaction){
@@ -132,5 +142,8 @@ fun explainIncorrectAnswer(stateOrigin: State, index: Int, exerciseList: Array<I
     this.onResponse<No> {
         furhat.say("I can explain more on division and afterwards you can jump back to the exercise when you feel ready.")
         goto(BeginExplanation)
+    }
+    this.onResponse<UnwillingToContinue> {
+        goto(UserCheerUp(this.thisState))
     }
 }

@@ -24,6 +24,21 @@ class Confused : Intent() {
             "What?", "What is this?", "What the hell is this?")
     }
 }
+
+class  UnwillingToContinue: Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("I want to quit", "I am tired","I am tired of practicing","I'm not doing it","Please, go away","Go away",
+            "Leave me alone", "Can we stop practicing?", "I don't want to practice anymore","I don't want to",
+            "I don't want to continue", "Can I quit?", "No more practicing","I don't want to", "I don't like you")
+    }
+}
+class  Confirmation: Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("I want to quit", "I am tired","I am tired of practicing","I'm not doing it","Please, go away","Go away",
+            "Leave me alone", "Can we stop practicing?", "I don't want to practice anymore","I don't want to",
+            "I don't want to continue", "Can I quit?", "No more practicing","I don't want to", "I don't like you")
+    }
+}
 class Frustrated : Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("I am bad at this", "I am bad","I can't do this", "I can't do it",
@@ -90,3 +105,4 @@ class DivisionAnswerInfo(var quotient : Number = Number(0),
         return generate("$quotient $remainder")
     }
 }
+
