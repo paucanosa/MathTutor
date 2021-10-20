@@ -33,7 +33,9 @@ val BeginExplanation: State = state(Interaction) {
         furhat.ask("Do you understand it?")
     }
     this.onResponse<Yes> {
-        random(furhat.say("Good!"), furhat.say("Great!"), furhat.say("Awesome!"))
+        random(  {furhat.say("Good!") },
+            { furhat.say("Great!") },
+            { furhat.say("Awesome!")} )
         goto(ExplanationUnderstood)
     }
     this.onResponse<No> {

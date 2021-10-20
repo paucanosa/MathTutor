@@ -6,7 +6,11 @@ import furhatos.util.*
 val Idle: State = state {
 
     init {
+        furhat.param.interruptableOnAsk = true
+        furhat.param.interruptableOnSay = true
         furhat.setVoice(Language.ENGLISH_US, Gender.MALE)
+
+
         if (users.count > 0) {
             furhat.attend(users.random)
             goto(InitState)
