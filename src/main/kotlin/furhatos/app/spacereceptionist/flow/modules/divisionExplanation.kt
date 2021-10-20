@@ -2,8 +2,10 @@
 package furhatos.app.spacereceptionist.flow
 
 import furhatos.app.spacereceptionist.flow.modules.BeginExam
+import furhatos.app.spacereceptionist.nlu.DivisionQuestion
 import furhatos.nlu.common.*
 import furhatos.flow.kotlin.*
+import furhatos.nlu.common.Number
 import kotlin.random.Random
 
 //TODO: I feel I am repeating a little bit. We can add another ways to explain the division...
@@ -72,8 +74,12 @@ var AdditionalExplanation: State = state(Interaction){
         random(furhat.say("Good!"), furhat.say("Great!"), furhat.say("Awesome!"))
     }
     this.onResponse<No> {
-        if(users.current.neededExplanations==4)
+        if(users.current.neededExplanations==5)
             furhat.say("Don't worry, let's start practicing and you will see it's not that difficult!")
+        if(users.current.neededExplanations==4){
+            furhat.say("Would you like to ask me a division question? I can teach you how to solve it!")
+                goto(TakeDivisionQuestion)
+        }
         else{
             random({furhat.say("Don't worry, we are going to try another way!")},
                 {furhat.say("It's okay, sometimes new things are not easy to understand! Let's try with other examples!")},
@@ -83,4 +89,41 @@ var AdditionalExplanation: State = state(Interaction){
 
     }
 
+}
+var TakeDivisionQuestion: State = state(Interaction){
+    onEntry {
+        furhat.ask("You can just ask me any division problem")
+    }
+    this.onNoResponse {
+        furhat.say("Let's try some math exercises and get you started with practicing.")
+        goto(BeginExercises)
+    }
+    this.onResponse<Yes>{
+        furhat.say("Nice!")
+        reentry()
+    }
+    this.onResponse<No> {
+        furhat.say("Alright! Let's try some math exercises and get you started with practicing.")
+        goto(BeginExercises)
+    }
+
+    this.onResponse<DivisionQuestion> {
+        val questionInfo = it.intent.question
+
+
+        if(questionInfo!!.dividend>Number(0) && questionInfo!!.divisor>Number(0)) {
+            val dividend = questionInfo!!.dividend.value!!.toInt() //this line converts it to a numeric value and then to an integer
+            val divisor = questionInfo!!.divisor.value!!.toInt()
+           val quotient : Int = dividend / divisor
+            val remainder : Int = dividend.rem(divisor)
+            furhat.say { "The answer is $quotient with remainder of $remainder." }
+            furhat.say("When you divide $dividend by $divisor, you can think of it like distributing $dividend apples for $divisor people evenly. In the end, everyone will get $quotient apples. And the remaining number of apple is $remainder.")
+            furhat.say("Now, I believe you are ready for some practices!")
+            goto(BeginExercises)
+        }
+        else{
+            furhat.say { "For this lessen, we are solving division problems where both dividend and divisor are integers. Let's try again!" }
+            reentry()
+        }
+    }
 }
