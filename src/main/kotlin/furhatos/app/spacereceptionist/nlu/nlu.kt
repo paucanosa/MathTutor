@@ -80,11 +80,10 @@ class DivisionAnswerInfo(var quotient : Number = Number(0),
         return listOf(
             "The quotient is @quotient.",
             "@quotient",
-            "It is @quotient",
-            "left with @remainder",
-            "The remainder is @remainder.",
-            "The answer is @quotient.",
-            "remainders @remainder")
+            "@quotient with remainder @remainder",
+            "@quotient with reminder @remainder",
+            "The quotient is @quotient and the remainder is @remainder",
+            "The quotient is @quotient and the reminder is @remainder")
     }
 
     override fun toText(): String {

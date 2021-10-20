@@ -24,16 +24,17 @@ val BeginExercises: State = state(Interaction) {
         goto(EasyExercises)
     }
 }
+
 val EasyExercises: State = state(Interaction){
     val index = (0 .. easy.size-1).random()
     onEntry{
-        furhat.ask("Let's practice solving an easy division exercises. " +
+        furhat.ask("Let's practice solving an easy division exercise. " +
                 "What is " + easy[index][0] + " divided by " + easy[index][1] + "?"
         )
     }
     this.onResponse<Number> {
         if(Number(it.intent.value!!)==Number(easy[index][2])) {
-            random(furhat.say("Good!"), furhat.say("Great!"), furhat.say("Awesome!"))
+            random({furhat.say("Good!")}, {furhat.say("Great!")}, {furhat.say("Awesome!")})
             furhat.say("That is right, the correct answer is "+ easy[index][2] + "." +
                 "Now on to the medium level exercises")
             goto(MediumExercises)
@@ -48,6 +49,7 @@ val EasyExercises: State = state(Interaction){
         goto(explainIncorrectAnswer(thisState, index, easy))
     }
 }
+
 val MediumExercises: State = state(Interaction){
     val index = (0 .. medium.size-1).random()
     onEntry{
@@ -60,7 +62,7 @@ val MediumExercises: State = state(Interaction){
         val answerInfo = it.intent.answer
         if(answerInfo!!.quotient==Number(medium[index][2])) {
             if(answerInfo!!.remainder==Number(medium[index][3])){
-            random(furhat.say("Good!"), furhat.say("Great!"), furhat.say("Awesome!"))
+            random({furhat.say("Good!")}, {furhat.say("Great!")}, {furhat.say("Awesome!")})
             furhat.say("That is right, the correct answer is "+ medium[index][2] + ". With remainder of " +
                    medium[index][3]+ ". Now on to the hard level exercises")
             }else{
@@ -80,6 +82,7 @@ val MediumExercises: State = state(Interaction){
         goto(explainIncorrectAnswer(thisState, index, medium))
     }
 }
+
 val HardExercises: State = state(Interaction){
     val index = (0 until hard.size-1).random()
     onEntry{
@@ -92,7 +95,7 @@ val HardExercises: State = state(Interaction){
         val answerInfo = it.intent.answer
         if(answerInfo!!.quotient==Number(hard[index][2])) {
             if(answerInfo!!.remainder==Number(hard[index][3])){
-                random(furhat.say("Good!"), furhat.say("Great!"), furhat.say("Awesome!"))
+                random({furhat.say("Good!")}, {furhat.say("Great!")}, {furhat.say("Awesome!")})
                 furhat.say("That is right, the correct answer is "+ hard[index][2] + ". With remainder of " +
                         hard[index][3]+ ". Now you can try taking the exam!")
                 goto(BeginExam)
@@ -113,6 +116,7 @@ val HardExercises: State = state(Interaction){
         goto(explainIncorrectAnswer(thisState, index, hard))
     }
 }
+
 fun explainIncorrectAnswer(stateOrigin: State, index: Int, exerciseList: Array<IntArray>): State = state(Interaction){
     onEntry{
         furhat.say("When you divide " + exerciseList[index][0] + " by "+ exerciseList[index][1]+
