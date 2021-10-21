@@ -7,6 +7,7 @@ import furhatos.app.spacereceptionist.nlu.DivisionQuestion
 import furhatos.app.spacereceptionist.nlu.UnwillingToContinue
 import furhatos.nlu.common.*
 import furhatos.flow.kotlin.*
+import furhatos.gestures.Gestures
 import furhatos.nlu.common.Number
 import kotlin.random.Random
 
@@ -35,17 +36,21 @@ val BeginExplanation: State = state(Interaction) {
         furhat.ask("Do you understand it?")
     }
     this.onResponse<Yes> {
+        furhat.gesture(Gestures.Smile)
         random(  {furhat.say("Good!") },
             { furhat.say("Great!") },
             { furhat.say("Awesome!")} )
         goto(ExplanationUnderstood)
     }
     this.onResponse<No> {
+        furhat.gesture(Gestures.ExpressSad)
         furhat.say("Don't worry, I will use another example!");
+
         goto(AdditionalExplanation);
     }
 
     this.onResponse<UnwillingToContinue> {
+        furhat.gesture(Gestures.Thoughtful)
         goto(UserCheerUp(this.thisState))
     }
 }
@@ -56,15 +61,18 @@ var ExplanationUnderstood: State = state(Interaction){
     }
 
     this.onResponse<Yes> {
+        furhat.gesture(Gestures.Smile)
         furhat.say("Let's get started then!")
         goto(BeginExercises)
     }
 
     this.onResponse<No> {
+        furhat.gesture(Gestures.Nod)
         furhat.say("Okay! I am afraid you need to practice a little bit before taking the exam. But if you want we can proceed to it now.")
         goto(BeginExam)
     }
     this.onResponse<UnwillingToContinue> {
+        furhat.gesture(Gestures.ExpressSad)
         goto(UserCheerUp(this.thisState))
     }
 }
@@ -82,12 +90,13 @@ var AdditionalExplanation: State = state(Interaction){
         )
     }
     this.onResponse<Yes> {
+        furhat.gesture(Gestures.Smile)
         random(furhat.say("Good!"), furhat.say("Great!"), furhat.say("Awesome!"))
     }
     this.onResponse<No> {
         if(users.current.neededExplanations==5)
             furhat.say("Don't worry, let's start practicing and you will see it's not that difficult!")
-        if(users.current.neededExplanations==4){
+        if(users.current.neededExplanations==3){
             furhat.say("Would you like to ask me a division question? I can teach you how to solve it!")
                 goto(TakeDivisionQuestion)
         }
@@ -113,10 +122,12 @@ var TakeDivisionQuestion: State = state(Interaction){
         goto(BeginExercises)
     }
     this.onResponse<Yes>{
+        furhat.gesture(Gestures.Smile)
         furhat.say("Nice!")
         reentry()
     }
     this.onResponse<No> {
+        furhat.gesture(Gestures.Nod)
         furhat.say("Alright! Let's try some math exercises and get you started with practicing.")
         goto(BeginExercises)
     }
@@ -130,6 +141,7 @@ var TakeDivisionQuestion: State = state(Interaction){
             val divisor = questionInfo!!.divisor.value!!.toInt()
            val quotient : Int = dividend / divisor
             val remainder : Int = dividend.rem(divisor)
+            furhat.gesture(Gestures.Nod)
             furhat.say { "The answer is $quotient with remainder of $remainder." }
             furhat.say("When you divide $dividend by $divisor, you can think of it like distributing $dividend apples for $divisor people evenly. In the end, everyone will get $quotient apples. And the remaining number of apple is $remainder.")
             furhat.say("Now, I believe you are ready for some practices!")

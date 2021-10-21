@@ -4,6 +4,7 @@ import furhatos.app.spacereceptionist.flow.*
 import furhatos.app.spacereceptionist.nlu.Confused
 import furhatos.app.spacereceptionist.nlu.UnwillingToContinue
 import furhatos.flow.kotlin.*
+import furhatos.gestures.Gestures
 import furhatos.nlu.common.No
 import furhatos.nlu.common.Number
 import furhatos.nlu.common.Yes
@@ -47,6 +48,7 @@ val ExamEasyExercice: State = state(Interaction){
         if(Number(it.intent.value!!) == Number(easy[index][2])) {
             users.current.nCorrectExamQuestions += 1
         }
+        furhat.gesture(Gestures.Nod)
         goto(ExamMediumExercice)
     }
     this.onResponse<Confused> {
@@ -72,6 +74,7 @@ val ExamMediumExercice: State = state(Interaction){
         if(Number(it.intent.value!!) == Number(medium[index][2])) {
             users.current.nCorrectExamQuestions += 1
         }
+        furhat.gesture(Gestures.Nod)
         goto(ExamHardExercice)
     }
     this.onResponse<Confused> {
@@ -97,6 +100,7 @@ val ExamHardExercice: State = state(Interaction){
         if(Number(it.intent.value!!) == Number(hard[index][2])) {
             users.current.nCorrectExamQuestions += 1
         }
+        furhat.gesture(Gestures.Nod)
         goto(ExamEnd)
     }
     this.onResponse<Confused> {
@@ -113,29 +117,36 @@ val ExamEnd: State = state(Interaction){
         furhat.say("Perfect! You have already finished the exam. Let's see how many questions you asked correctly.")
         delay(2000)
         if (users.current.nCorrectExamQuestions == 3) {
+            furhat.gesture(Gestures.BigSmile)
             furhat.say("Well done!! All your answers were correct!")
             furhat.say("Congratulations! You already understand how the division works.")
             terminate()
         }
         else if (users.current.nCorrectExamQuestions == 2) {
+            furhat.gesture(Gestures.Nod)
             furhat.say("Good job! You only made one mistake ")
             furhat.ask("You almost anwered all the exercieses correctly. Do you want to practice a little bit more so that next time you obtain a perfect score?")
         }
         else if (users.current.nCorrectExamQuestions == 1) {
+            furhat.gesture(Gestures.Shake)
             furhat.say("You have made two mistakes. You need to keep practicing more.")
             furhat.ask("Do you want to do it now?")
         }
         else {
+            furhat.gesture(Gestures.Shake)
+            furhat.gesture(Gestures.ExpressSad)
             furhat.say("All your answers were wrong. It looks like you need to practice more. I encourage you to keep practicing as soon as possible")
             furhat.ask("Do you want to do it now?")
         }
     }
     this.onResponse<Yes> {
+        furhat.gesture(Gestures.Smile(strength=0.5))
         random({furhat.say("Good!")}, {furhat.say("Great!")}, {furhat.say("Awesome!")})
         goto(EasyExercises)
     }
     this.onResponse<No> {
         furhat.say("No problem. See you in our next class.");
+        furhat.gesture(Gestures.Smile(strength=0.5))
     }
     this.onResponse<UnwillingToContinue> {
         goto(UserCheerUp(this.thisState))
