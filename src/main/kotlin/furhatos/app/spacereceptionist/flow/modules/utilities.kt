@@ -1,6 +1,8 @@
 package furhatos.app.spacereceptionist.flow.modules
 
+import furhatos.app.spacereceptionist.flow.valence
 import furhatos.flow.kotlin.state
+import furhatos.flow.kotlin.users
 import furhatos.gestures.BasicParams
 import furhatos.gestures.defineGesture
 import org.apache.commons.math3.distribution.NormalDistribution
@@ -19,12 +21,15 @@ fun inferEmotion() = state {
         } as String
 
         // Reply to user depending on the returned response
-        val reply = when {
+        var reply = when {
             FAILED_RESPONSES.contains(response) -> {
                 "Error"
             }
             else -> "$response"
         }
+
+        users.current.valence = reply.split("~").toTypedArray()[1].toDouble()
+        reply = reply.split("~").toTypedArray()[0]
 
         // Return the response
         terminate(reply)
