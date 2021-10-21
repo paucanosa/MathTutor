@@ -25,6 +25,46 @@ class Confused : Intent() {
     }
 }
 
+class PracticeModule : Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("Exercises", "The exercises","I want the exercises",
+            "I want to start with the exercises", "With exercises", "I want to practice some exercises")
+    }
+}
+
+class ExamModule : Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("Exam", "The exam","I want the exam","I want to take the exam",
+            "I want to start with the exam", "With the exam", "I want to practice with the exam")
+    }
+}
+class ExplanationModule : Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("Explanation", "The explanation","I want the explanation",
+            "I want to start with the explanation", "With explanation")
+    }
+}
+
+class HardExercises : Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("Hard", "Hard exercises","I want the hard ones",
+            "I want to start with the hard exercises", "I want to practice with hard exercises")
+    }
+}
+
+class MediumExercises : Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("Medium", "Medium exercises","I want the medium ones",
+            "I want to start with the medium exercises", "I want to practice with medium exercises")
+    }
+}
+class EasyExercises : Intent() {
+    override fun getExamples(lang: Language): List<String> {
+        return listOf("Easy", "Easy exercises","I want the easy ones",
+            "I want to start with the easy exercises", "I want to practice with easy exercises")
+    }
+}
+
 class  UnwillingToContinue: Intent() {
     override fun getExamples(lang: Language): List<String> {
         return listOf("I want to quit", "I am tired","I am tired of practicing","I'm not doing it","Please, go away","Go away",

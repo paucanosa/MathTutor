@@ -1,8 +1,7 @@
 package furhatos.app.spacereceptionist.flow.modules
 
 import furhatos.app.spacereceptionist.flow.*
-import furhatos.app.spacereceptionist.nlu.Confused
-import furhatos.app.spacereceptionist.nlu.UnwillingToContinue
+import furhatos.app.spacereceptionist.nlu.*
 import furhatos.flow.kotlin.*
 import furhatos.gestures.Gestures
 import furhatos.nlu.common.No
@@ -12,6 +11,7 @@ import furhatos.nlu.common.Yes
 val explanationStates = arrayOf("BeginExplanation","ExplanationUnderstood","AdditionalExplanation","TakeDivisionQuestion")
 val practiceStates = arrayOf("EasyExercises","MediumExercises","HardExercises","explainIncorrectAnswer")
 val examStates = arrayOf("BeginExam","ExamEasyExercice","ExamMediumExercice","ExamHardExercice","ExamEnd")
+val availableModules = arrayOf("Explanation","Practice", "Exam");
 
 fun UserCheerUp(originState: State): State = state(Interaction) {
     onEntry {
@@ -48,8 +48,8 @@ fun UserCheerUpExplanation(originState: State): State = state(Interaction) {
             { furhat.say("Let me refresh your memory with the last comment")})
         goto(originState);
     }
-    this.onResponse<No> {goto(frustratedUserFarewell)}
-    this.onResponse<UnwillingToContinue> {goto(frustratedUserFarewell)}
+    this.onResponse<No> {goto(switchModuleOption("Explanation"))}
+    this.onResponse<UnwillingToContinue> {goto(switchModuleOption("Explanation"))}
 }
 
 fun UserCheerUpPractice(originState: State): State = state(Interaction) {
@@ -82,8 +82,8 @@ fun UserCheerUpPractice(originState: State): State = state(Interaction) {
         furhat.say("Let's continue with the practice.'" )
         goto(originState);
     }
-    this.onResponse<No> {goto(frustratedUserFarewell)}
-    this.onResponse<UnwillingToContinue> {goto(frustratedUserFarewell)}
+    this.onResponse<No> {goto(switchModuleOption("Practice"))}
+    this.onResponse<UnwillingToContinue> {goto(switchModuleOption("Practice"))}
 }
 
 fun UserCheerUpExam(originState: State): State = state(Interaction) {
@@ -113,10 +113,51 @@ fun UserCheerUpExam(originState: State): State = state(Interaction) {
         furhat.say("Let's continue with the session" )
         goto(originState);
     }
+    this.onResponse<No> {goto(switchModuleOption("Exam"))}
+    this.onResponse<UnwillingToContinue> {goto(switchModuleOption("Exam"))}
+}
+
+
+fun switchModuleOption(module:String):State = state(Interaction){
+    val differentModules = availableModules.filter { it!=module }
+    onEntry {
+
+        furhat.ask("We can change to another module, for example, "+differentModules[0]+" or " +differentModules[1]+", would you like that?")
+    }
+    this.onResponse<Yes> {
+        furhat.gesture(Gestures.Smile(strength=0.5))
+        goto(choseModule(differentModules));
+    }
+    this.onNoResponse {
+        goto(choseModule(differentModules));
+    }
     this.onResponse<No> {goto(frustratedUserFarewell)}
     this.onResponse<UnwillingToContinue> {goto(frustratedUserFarewell)}
 }
 
+fun choseModule(options:List<String>):State = state(Interaction){
+    onEntry {
+        furhat.ask("Would you like to switch to " +options[0] +" or " + options[1]+"?")
+    }
+
+    this.onResponse<ExplanationModule> {
+        furhat.gesture(Gestures.Smile(strength=0.5))
+        furhat.say("Great")
+        goto(BeginExplanation);
+    }
+    this.onResponse<PracticeModule> {
+        furhat.gesture(Gestures.Smile(strength=0.5))
+        furhat.say("Good")
+        goto(BeginExercises);
+    }
+    this.onResponse<ExamModule> {
+        furhat.gesture(Gestures.Smile(strength=0.5))
+        furhat.say("Nice")
+        goto(BeginExam);
+    }
+    this.onResponse<UnwillingToContinue> {goto(frustratedUserFarewell)}
+
+}
 val frustratedUserFarewell: State = state(Interaction) {
     onEntry {
         random({

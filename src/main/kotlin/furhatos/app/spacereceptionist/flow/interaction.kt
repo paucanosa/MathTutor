@@ -1,6 +1,9 @@
 package furhatos.app.spacereceptionist.flow
 
+import furhatos.app.spacereceptionist.flow.modules.BeginExam
 import furhatos.app.spacereceptionist.nlu.Confused
+import furhatos.app.spacereceptionist.nlu.ExamModule
+import furhatos.app.spacereceptionist.nlu.PracticeModule
 import furhatos.nlu.common.*
 import furhatos.flow.kotlin.*
 import furhatos.gestures.*
@@ -20,8 +23,8 @@ val InitState: State = state(Interaction) {
     }
 
     this.onResponse<Yes> {
-        furhat.say("Then let's start by introducing ourselves!")
-        goto(InitialDataRetrieval)
+        furhat.say("Good!")
+        goto(CheckingUserFromTheBeginning)
     }
 
     this.onResponse<No> {
@@ -35,6 +38,33 @@ val InitState: State = state(Interaction) {
                 " I will help you in the process. ")
         furhat.gesture(Gestures.Thoughtful)
         reentry()
+    }
+}
+
+val CheckingUserFromTheBeginning:State = state(Interaction){
+    onEntry {
+        furhat.ask("By the way, would you like to start from the beginning?")
+    }
+    this.onResponse<Yes> {
+        furhat.say("Then let's start by introducing ourselves!");
+        goto(InitialDataRetrieval);
+    }
+    this.onResponse<No> {
+       goto(ChoosePracticeOrExam)
+    }
+}
+
+val ChoosePracticeOrExam:State = state(Interaction){
+    onEntry {
+        furhat.ask("Then, choose, do you want to start with the exercises or exam?")
+    }
+    this.onResponse<PracticeModule> {
+        furhat.say("Good")
+        goto(BeginExercises);
+    }
+    this.onResponse<ExamModule> {
+        furhat.say("Good")
+        goto(BeginExam);
     }
 }
 
