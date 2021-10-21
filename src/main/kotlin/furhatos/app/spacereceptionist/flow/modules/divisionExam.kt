@@ -132,23 +132,51 @@ val ExamEnd: State = state(Interaction){
             furhat.gesture(Gestures.BigSmile)
             furhat.say("Well done!! All your answers were correct!")
             furhat.say("Congratulations! You already understand how the division works.")
+            val emotion = call(inferEmotion())
+            if (isSadEmotion(emotion as String)) {
+                furhat.say("Why are you sad? You have performed excellent! You should be very proud of yourself.")
+            }
             terminate()
         }
         else if (users.current.nCorrectExamQuestions == 2) {
             furhat.gesture(Gestures.Nod)
             furhat.say("Good job! You only made one mistake ")
-            furhat.ask("You almost anwered all the exercieses correctly. Do you want to practice a little bit more so that next time you obtain a perfect score?")
+            val emotion = call(inferEmotion())
+            if (isSadEmotion(emotion as String)) {
+                furhat.say("Don't be sad. You have only failed one question. Next time I am sure that you will answer all of them correctly.")
+                furhat.ask("Do you want to practice a little bit more so that next time you obtain a perfect score?")
+            }
+            else {
+                furhat.say("Keep practicing with this enthusiasm and I am sure that you will obtain a perfect score soon.")
+                furhat.ask("Do you want to practice a little bit more?")
+            }
         }
         else if (users.current.nCorrectExamQuestions == 1) {
             furhat.gesture(Gestures.Shake)
             furhat.say("You have made two mistakes. You need to keep practicing more.")
-            furhat.ask("Do you want to do it now?")
+            val emotion = call(inferEmotion())
+            if (isSadEmotion(emotion as String)) {
+                furhat.say("You don't have to worry. The division may seem very difficult in the beginning but if you keep practicing you will improve soon.")
+                furhat.ask("Do you want to do it now?")
+            }
+            else {
+                furhat.say("It is okay to have a positive attitude. But remember that you have to study hard to perform better next time.")
+                furhat.ask("Do you want to do it now?")
+            }
         }
         else {
             furhat.gesture(Gestures.Shake)
             furhat.gesture(Gestures.ExpressSad)
             furhat.say("All your answers were wrong. It looks like you need to practice more. I encourage you to keep practicing as soon as possible")
-            furhat.ask("Do you want to do it now?")
+            val emotion = call(inferEmotion())
+            if (isSadEmotion(emotion as String)) {
+                furhat.say("You don't have to worry. The division may seem very difficult in the beginning but if you keep practicing you will improve soon.")
+                furhat.ask("Do you want to do it now?")
+            }
+            else {
+                furhat.say("It is okay to have a positive attitude. But remember that you have to study hard to perform better next time.")
+                furhat.ask("Do you want to do it now?")
+            }
         }
     }
     this.onResponse<Yes> {

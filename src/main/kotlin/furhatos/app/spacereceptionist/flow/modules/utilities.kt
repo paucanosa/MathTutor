@@ -75,6 +75,14 @@ fun generalQuestion(inputQuest: String,stateOrigin: State): State = state(Intera
 }
 
 // Custom Gesture
+fun isHappyEmotion(emotion: String): Boolean {
+    return emotion in arrayOf("Affection", "Confidence", "Engagement", "Esteem", "Excitement", "Happiness", "Peace", "Pleasure", "Sympathy")
+}
+
+fun isSadEmotion(emotion: String): Boolean {
+    return !isHappyEmotion(emotion)
+}
+
 val LookAway = defineGesture("LookAway") {
     val nd : NormalDistribution = NormalDistribution(85.97, 120.24)
 
