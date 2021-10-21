@@ -11,6 +11,6 @@ var User.failedExercises   by NullSafeUserDataDelegate { intArrayOf()}
 var User.passedExercises  by NullSafeUserDataDelegate { intArrayOf()}
 var User.attemptedExercises by NullSafeUserDataDelegate { intArrayOf()}
 var User.nCorrectExamQuestions by NullSafeUserDataDelegate { 0 }
-
+var User.valence by NullSafeUserDataDelegate { 0.00 }
 
 
