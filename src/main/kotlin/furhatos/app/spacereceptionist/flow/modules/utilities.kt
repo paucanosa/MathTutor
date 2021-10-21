@@ -74,6 +74,7 @@ fun generalQuestion(inputQuest: String,stateOrigin: State): State = state(Intera
     //}
 }
 
+// Custom Gesture
 val LookAway = defineGesture("LookAway") {
     val nd : NormalDistribution = NormalDistribution(85.97, 120.24)
 
@@ -90,4 +91,28 @@ val LookAway = defineGesture("LookAway") {
         BasicParams.GAZE_TILT to -5
     }
     reset(dur)
+}
+
+// Random Filler Generator
+fun addFillers(sentence:String, percent:Double = 0.2): String{
+
+    val sentEndings = listOf<String>(".","?","!")
+
+    val parts = sentence.split(" ").toMutableList()
+    val numFPs = (0..(parts.size * percent).toInt()).random()
+
+    val pos = mutableListOf<Int>()
+    for (idx in (0 until numFPs)){
+        pos.add(idx, (0 until parts.size).random())
+    }
+
+    for (idx in pos){
+        if (idx == 0 || sentEndings.contains(parts[idx - 1].last().toString())){
+            parts.add(idx, "u:m")
+        } else {
+            parts.add(idx, "u:h")
+        }
+    }
+
+    return parts.joinToString(" ")
 }
