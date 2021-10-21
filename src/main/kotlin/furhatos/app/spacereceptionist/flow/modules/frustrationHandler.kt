@@ -4,6 +4,7 @@ import furhatos.app.spacereceptionist.flow.*
 import furhatos.app.spacereceptionist.nlu.Confused
 import furhatos.app.spacereceptionist.nlu.UnwillingToContinue
 import furhatos.flow.kotlin.*
+import furhatos.gestures.Gestures
 import furhatos.nlu.common.No
 import furhatos.nlu.common.Number
 import furhatos.nlu.common.Yes
@@ -18,7 +19,8 @@ fun UserCheerUp(originState: State): State = state(Interaction) {
        else if(practiceStates.contains(originState.name))goto(UserCheerUpPractice(originState))
         else if(examStates.contains(originState.name))goto(UserCheerUpExam(originState))
         else {
-           furhat.say("Come on, let's continue, you'll see this session is going to be worthed!")
+           furhat.say("Come on, let's continue, you'll see this session is going to be worth it!")
+           furhat.gesture(Gestures.Smile)
            goto(originState)
        }
     }
@@ -27,12 +29,14 @@ fun UserCheerUp(originState: State): State = state(Interaction) {
 
 fun UserCheerUpExplanation(originState: State): State = state(Interaction) {
     onEntry {
+        furhat.gesture(Gestures.Thoughtful(strength=0.5))
         random({furhat.say("Hey, I know this is not easy but it will really help you on the following courses")},
             {furhat.say("Hey, it's only the beginning, I am sure you are going to have fun when practicing, trust me!")},
             {furhat.say("Do you understand it now?")})
         furhat.ask("Let's continue, alright?")
     }
     this.onResponse<Yes> {
+        furhat.gesture(Gestures.Smile(strength = 0.5))
         random({furhat.say("Okay, let me continue then" )},
             {furhat.say("Great, I am going to repeat myself" )},
             { furhat.say("Good choice, let me refresh your memory with where we were.")})
@@ -50,7 +54,8 @@ fun UserCheerUpExplanation(originState: State): State = state(Interaction) {
 
 fun UserCheerUpPractice(originState: State): State = state(Interaction) {
     onEntry {
-        if(originState.name==="EasyExercises")random({furhat.say("You are just in the beginning, don't give up now!")},
+        furhat.gesture(Gestures.Smile(strength=0.5))
+        if(originState.name==="EasyExercises")random({furhat.say("You are just in the beginning, don't give up now!") },
             {furhat.say("The beginning of practice is the most difficult step, don't worry, trust me!")},
             {furhat.say("Don't worry, it is normal to be wrong at the beginning.")})
         else if(originState.name==="MediumExercises")random({furhat.say("Things are getting harder but you have already overcome the easy exercises, don't give up!")},
@@ -60,7 +65,7 @@ fun UserCheerUpPractice(originState: State): State = state(Interaction) {
             {furhat.say("This kind of exercise are challenging, it is normal to be wrong sometimes.")},
             {furhat.say("You already know a lot about division, let's take this final step, you are almost there.")})
         else{
-            random({furhat.say("I understand your frustation, but I am here to help you, let's make this work together!")},
+            random({furhat.say("I understand your frustration, but I am here to help you, let's make this work together!")},
                 {furhat.say("It doesn't matter if you fail a thousand times, I am going to be here to explain it to you, don't worry.")},
                 {furhat.say("Hey, it's normal to get frustrated, but it's more important to keep going!")},
                 {furhat.say("You are doing great, don't worry.")})
@@ -68,10 +73,12 @@ fun UserCheerUpPractice(originState: State): State = state(Interaction) {
         furhat.ask("Let's continue, alright?")
     }
     this.onResponse<Yes> {
+        furhat.gesture(Gestures.Smile)
         furhat.say("Great, let's keep practicing then" )
         goto(originState);
     }
     this.onNoResponse {
+        furhat.gesture(Gestures.Nod(strength = 0.5))
         furhat.say("Let's continue with the practice.'" )
         goto(originState);
     }
@@ -98,6 +105,7 @@ fun UserCheerUpExam(originState: State): State = state(Interaction) {
 
     }
     this.onResponse<Yes> {
+        furhat.gesture(Gestures.Smile(strength=0.5))
         furhat.say("Great, let's continue then" )
         goto(originState);
     }
