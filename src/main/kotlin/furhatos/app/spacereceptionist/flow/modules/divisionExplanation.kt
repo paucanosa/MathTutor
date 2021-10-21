@@ -3,6 +3,7 @@ package furhatos.app.spacereceptionist.flow
 
 import furhatos.app.spacereceptionist.flow.modules.BeginExam
 import furhatos.app.spacereceptionist.flow.modules.UserCheerUp
+import furhatos.app.spacereceptionist.flow.modules.generalQuestion
 import furhatos.app.spacereceptionist.nlu.DivisionQuestion
 import furhatos.app.spacereceptionist.nlu.UnwillingToContinue
 import furhatos.nlu.common.*
@@ -111,6 +112,9 @@ var AdditionalExplanation: State = state(Interaction){
     this.onResponse<UnwillingToContinue> {
         goto(UserCheerUp(this.thisState))
     }
+    this.onResponse {
+        goto(generalQuestion(it.text,thisState));
+    }
 
 }
 var TakeDivisionQuestion: State = state(Interaction){
@@ -154,5 +158,8 @@ var TakeDivisionQuestion: State = state(Interaction){
     }
     this.onResponse<UnwillingToContinue> {
         goto(UserCheerUp(this.thisState))
+    }
+    this.onResponse {
+        goto(generalQuestion(it.text,thisState));
     }
 }

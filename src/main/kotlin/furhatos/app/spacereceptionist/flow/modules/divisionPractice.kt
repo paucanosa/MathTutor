@@ -3,6 +3,7 @@ package furhatos.app.spacereceptionist.flow
 
 import furhatos.app.spacereceptionist.flow.modules.BeginExam
 import furhatos.app.spacereceptionist.flow.modules.UserCheerUp
+import furhatos.app.spacereceptionist.flow.modules.generalQuestion
 import furhatos.app.spacereceptionist.nlu.*
 import furhatos.nlu.common.*
 import furhatos.flow.kotlin.*
@@ -38,6 +39,9 @@ val BeginExercises: State = state(Interaction) {
         furhat.say("Alright")
         goto(HardExercises)
     }
+    this.onResponse {
+        goto(generalQuestion(it.text,thisState));
+    }
 
 }
 
@@ -69,6 +73,9 @@ val EasyExercises: State = state(Interaction){
     }
     this.onResponse<UnwillingToContinue> {
         goto(UserCheerUp(this.thisState))
+    }
+    this.onResponse {
+        goto(generalQuestion(it.text,thisState));
     }
 }
 
@@ -115,6 +122,9 @@ val MediumExercises: State = state(Interaction){
         furhat.gesture(Gestures.ExpressSad)
         goto(UserCheerUp(this.thisState))
     }
+    this.onResponse {
+        goto(generalQuestion(it.text,thisState));
+    }
 }
 
 val HardExercises: State = state(Interaction){
@@ -158,6 +168,9 @@ val HardExercises: State = state(Interaction){
         furhat.gesture(Gestures.ExpressSad)
         goto(UserCheerUp(this.thisState))
     }
+    this.onResponse {
+        goto(generalQuestion(it.text,thisState));
+    }
 }
 
 fun explainIncorrectAnswer(stateOrigin: State, index: Int, exerciseList: Array<IntArray>): State = state(Interaction){
@@ -182,5 +195,8 @@ fun explainIncorrectAnswer(stateOrigin: State, index: Int, exerciseList: Array<I
     this.onResponse<UnwillingToContinue> {
 
         goto(UserCheerUp(this.thisState))
+    }
+    this.onResponse {
+        goto(generalQuestion(it.text,thisState));
     }
 }

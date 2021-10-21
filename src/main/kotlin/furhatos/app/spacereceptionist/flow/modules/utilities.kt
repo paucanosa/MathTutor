@@ -1,10 +1,11 @@
 package furhatos.app.spacereceptionist.flow.modules
 
+import furhatos.app.spacereceptionist.flow.Interaction
 import furhatos.app.spacereceptionist.flow.valence
-import furhatos.flow.kotlin.state
-import furhatos.flow.kotlin.users
+import furhatos.flow.kotlin.*
 import furhatos.gestures.BasicParams
 import furhatos.gestures.defineGesture
+import furhatos.nlu.common.No
 import org.apache.commons.math3.distribution.NormalDistribution
 
 val FAILED_RESPONSES = listOf("Error", "No spoken result available", "Wolfram Alpha did not understand your input")
@@ -42,10 +43,11 @@ fun inferEmotion() = state {
 }
 
 // State to conduct the query to the Wolframalpha API
-fun generalQuestion(inputQuest: String) = state{
+fun generalQuestion(inputQuest: String,stateOrigin: State): State = state(Interaction){
+    var generalQuestion = inputQuest
     onEntry {
         val BASE_URL = "https://api.wolframalpha.com/v1/spoken"
-        val question = inputQuest.replace("+", " plus ").replace(" ", "+")
+        val question = generalQuestion.replace("+", " plus ").replace(" ", "+")
         val query = "$BASE_URL?i=$question&appid=$APP_ID"
 
         val response = call {
@@ -59,15 +61,17 @@ fun generalQuestion(inputQuest: String) = state{
             }
             else -> "$response"
         }
-
+        furhat.say(response)
+        furhat.say("Come on, let's continue with the lesson.")
+        goto(stateOrigin)
         // Return the response
-        terminate(reply)
+        //terminate(reply)
     }
 
-    onTime(TIMEOUT) {
-        println("Issues connecting to Inference Server")
-        terminate("Having Trouble Connecting")
-    }
+    //onTime(TIMEOUT) {
+      //  println("Issues connecting to Inference Server")
+        //terminate("Having Trouble Connecting")
+    //}
 }
 
 val LookAway = defineGesture("LookAway") {
