@@ -1,10 +1,13 @@
 package furhatos.app.spacereceptionist.flow.modules
 
+import furhatos.app.spacereceptionist.flow.Interaction
 import furhatos.app.spacereceptionist.flow.valence
-import furhatos.flow.kotlin.state
-import furhatos.flow.kotlin.users
+import furhatos.flow.kotlin.*
 import furhatos.gestures.BasicParams
+import furhatos.gestures.Gestures
 import furhatos.gestures.defineGesture
+import furhatos.nlu.common.No
+import furhatos.nlu.common.Yes
 import org.apache.commons.math3.distribution.NormalDistribution
 
 val FAILED_RESPONSES = listOf("Error", "No spoken result available", "Wolfram Alpha did not understand your input")
@@ -42,11 +45,22 @@ fun inferEmotion() = state {
 }
 
 // State to conduct the query to the Wolframalpha API
-fun generalQuestion(inputQuest: String) = state{
+fun generalQuestion(inputQuest: String,stateOrigin: State): State = state(Interaction){
+    val BASE_URL = "https://api.wolframalpha.com/v1/spoken"
+    var question = inputQuest.replace("+", " plus ").replace(" ", "+")
+    var query = "$BASE_URL?i=$question&appid=$APP_ID"
+
     onEntry {
-        val BASE_URL = "https://api.wolframalpha.com/v1/spoken"
-        val question = inputQuest.replace("+", " plus ").replace(" ", "+")
-        val query = "$BASE_URL?i=$question&appid=$APP_ID"
+        furhat.ask("Do you want me to find the answer to that?")
+    }
+
+    this.onResponse<Yes> {
+
+        // Filler speech and gesture
+        furhat.say(async = true) {
+            + "Okay let me think"
+            + Gestures.GazeAway
+        }
 
         val response = call {
             khttp.get(query).text
@@ -59,15 +73,54 @@ fun generalQuestion(inputQuest: String) = state{
             }
             else -> "$response"
         }
-
-        // Return the response
-        terminate(reply)
+        furhat.say(response)
+        furhat.say("Come on, let's continue with the lesson.")
+        goto(stateOrigin)
     }
 
-    onTime(TIMEOUT) {
-        println("Issues connecting to Inference Server")
-        terminate("Having Trouble Connecting")
+    this.onResponse<No> {
+        furhat.say("Come on, let's continue with the lesson then.")
+        goto(stateOrigin)
     }
+
+    this.onResponse {
+
+        // Filler speech and gesture
+        furhat.say(async = true) {
+            + "Okay let me think"
+            + Gestures.GazeAway
+        }
+
+        val response = call {
+            khttp.get(query).text
+        } as String
+
+        // Reply to user depending on the returned response
+        val reply = when {
+            FAILED_RESPONSES.contains(response) -> {
+                "That's an interesting question"
+            }
+            else -> "$response"
+        }
+        furhat.say(response)
+        furhat.say("Come on, let's continue with the lesson.")
+        goto(stateOrigin)
+    }
+
+
+    //onTime(TIMEOUT) {
+      //  println("Issues connecting to Inference Server")
+        //terminate("Having Trouble Connecting")
+    //}
+}
+
+// Custom Gesture
+fun isHappyEmotion(emotion: String): Boolean {
+    return emotion in arrayOf("Affection", "Confidence", "Engagement", "Esteem", "Excitement", "Happiness", "Peace", "Pleasure", "Sympathy")
+}
+
+fun isSadEmotion(emotion: String): Boolean {
+    return !isHappyEmotion(emotion)
 }
 
 val LookAway = defineGesture("LookAway") {
@@ -86,4 +139,28 @@ val LookAway = defineGesture("LookAway") {
         BasicParams.GAZE_TILT to -5
     }
     reset(dur)
+}
+
+// Random Filler Generator
+fun addFillers(sentence:String, percent:Double = 0.1): String{
+
+    val sentEndings = listOf<String>(".","?","!")
+
+    val parts = sentence.split(" ").toMutableList()
+    val numFPs = (0..(parts.size * percent).toInt()).random()
+
+    val pos = mutableListOf<Int>()
+    for (idx in (0 until numFPs)){
+        pos.add(idx, (0 until parts.size).random())
+    }
+
+    for (idx in pos){
+        if (idx == 0 || sentEndings.contains(parts[idx - 1].last().toString())){
+            parts.add(idx, "um")
+        } else {
+            parts.add(idx, "uh")
+        }
+    }
+
+    return parts.joinToString(" ")
 }

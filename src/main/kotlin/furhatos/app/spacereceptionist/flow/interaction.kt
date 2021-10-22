@@ -1,6 +1,7 @@
 package furhatos.app.spacereceptionist.flow
 
 import furhatos.app.spacereceptionist.flow.modules.BeginExam
+import furhatos.app.spacereceptionist.flow.modules.generalQuestion
 import furhatos.app.spacereceptionist.nlu.Confused
 import furhatos.app.spacereceptionist.nlu.ExamModule
 import furhatos.app.spacereceptionist.nlu.PracticeModule
@@ -49,12 +50,20 @@ val InitState: State = state(Interaction) {
         furhat.gesture(Gestures.Thoughtful)
         reentry()
     }
+
+   this.onResponse {
+        goto(generalQuestion(it.text,thisState));
+   }
 }
 
 val CheckingUserFromTheBeginning:State = state(Interaction){
     onEntry {
-        furhat.ask("By the way, would you like to start from the beginning?")
+
+
         furhat.gesture(LookAway, async = true)
+
+        furhat.ask("Would you like to start from the beginning?")
+
     }
     this.onResponse<Yes> {
         furhat.say("Then let's start by introducing ourselves!");
@@ -64,6 +73,10 @@ val CheckingUserFromTheBeginning:State = state(Interaction){
     this.onResponse<No> {
         furhat.gesture(LookAway, async = true)
        goto(ChoosePracticeOrExam)
+    }
+
+    this.onResponse {
+        goto(generalQuestion(it.text,thisState));
     }
 }
 
@@ -82,6 +95,9 @@ val ChoosePracticeOrExam:State = state(Interaction){
         furhat.gesture(LookAway, async = true)
         goto(BeginExam);
     }
+    this.onResponse {
+        goto(generalQuestion(it.text,thisState));
+    }
 }
 
 val InitialDataRetrieval:State = state(Interaction){
@@ -91,6 +107,11 @@ val InitialDataRetrieval:State = state(Interaction){
         furhat.gesture(LookAway, async = true)
 
     }
+
+    this.onReentry {
+        furhat.ask("Can I know your name please?")
+    }
+
     this.onResponse<PersonName> {
         users.current.name = it.intent.text;
         furhat.gesture(Gestures.Smile)
@@ -120,5 +141,10 @@ val InitialDataRetrieval:State = state(Interaction){
             goto(BeginExplanation)
         }
     }
+    this.onResponse {
+        goto(generalQuestion(it.text,thisState));
+
+    }
 }
+
 

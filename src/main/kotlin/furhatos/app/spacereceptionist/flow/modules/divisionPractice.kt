@@ -3,6 +3,9 @@ package furhatos.app.spacereceptionist.flow
 
 import furhatos.app.spacereceptionist.flow.modules.BeginExam
 import furhatos.app.spacereceptionist.flow.modules.UserCheerUp
+import furhatos.app.spacereceptionist.flow.modules.addFillers
+import furhatos.app.spacereceptionist.flow.modules.generalQuestion
+import furhatos.app.spacereceptionist.flow.modules.isSadEmotion
 import furhatos.app.spacereceptionist.nlu.*
 import furhatos.nlu.common.*
 import furhatos.flow.kotlin.*
@@ -19,10 +22,10 @@ val BeginExercises: State = state(Interaction) {
 
     onEntry {
 
-        furhat.say("Before we start practicing, you need to know that the exercises are classified in three levels:" +
+        furhat.say(addFillers("Before we start practicing, you need to know that the exercises are classified in three levels:" +
                 " easy, medium and hard. Usually, we start by the easiest ones and keep increasing the difficulty. " +
                 "Once you think you have practiced enough, you can ask for an exam, in order to get proof that you have" +
-                "understood the division.")
+                "understood the division."))
         furhat.ask("Would you like to start by easy, medium or hard exercises?")
 
     }
@@ -42,6 +45,9 @@ val BeginExercises: State = state(Interaction) {
         furhat.say("Alright")
 
         goto(HardExercises)
+    }
+    this.onResponse {
+        goto(generalQuestion(it.text,thisState));
     }
 
 }
@@ -72,11 +78,21 @@ val EasyExercises: State = state(Interaction){
     }
     this.onResponse<Confused> {
         furhat.say("Don't worry. I will explain the solution to you.")
+
         furhat.gesture(LookAway, async = true)
+        val oldValence = users.current.valence
+        val emotion = call(inferEmotion())
+        if (isSadEmotion(emotion as String) && oldValence > users.current.valence) {
+            goto(UserCheerUp(explainIncorrectAnswer(thisState, index, easy)))
+        }
+
         goto(explainIncorrectAnswer(thisState, index, easy))
     }
     this.onResponse<UnwillingToContinue> {
         goto(UserCheerUp(this.thisState))
+    }
+    this.onResponse {
+        goto(generalQuestion(it.text,thisState));
     }
 }
 
@@ -114,6 +130,11 @@ val MediumExercises: State = state(Interaction){
             furhat.gesture(LookAway, async = true)
             furhat.say("That is incorrect. The answer is " +  medium[index][2] +
                     " with remainder of " + medium[index][3] + ".")
+            val oldValence = users.current.valence
+            val emotion = call(inferEmotion())
+            if (isSadEmotion(emotion as String) && oldValence > users.current.valence) {
+                goto(UserCheerUp(explainIncorrectAnswer(thisState, index, medium)))
+            }
             goto(explainIncorrectAnswer(thisState, index, medium))
         }
     }
@@ -126,6 +147,9 @@ val MediumExercises: State = state(Interaction){
         furhat.gesture(Gestures.ExpressSad)
         furhat.gesture(LookAway, async = true)
         goto(UserCheerUp(this.thisState))
+    }
+    this.onResponse {
+        goto(generalQuestion(it.text,thisState));
     }
 }
 
@@ -162,7 +186,15 @@ val HardExercises: State = state(Interaction){
             furhat.gesture(Gestures.Shake)
             furhat.say("That is incorrect. The answer is " +  hard[index][2] +
                     " with remainder of " + hard[index][3] + ".")
+
             furhat.gesture(LookAway, async = true)
+
+            val oldValence = users.current.valence
+            val emotion = call(inferEmotion())
+            if (isSadEmotion(emotion as String) && oldValence > users.current.valence) {
+                UserCheerUp(explainIncorrectAnswer(thisState, index, hard))
+            }
+
             goto(explainIncorrectAnswer(thisState, index, hard))
         }
     }
@@ -174,6 +206,9 @@ val HardExercises: State = state(Interaction){
     this.onResponse<UnwillingToContinue> {
         furhat.gesture(Gestures.ExpressSad)
         goto(UserCheerUp(this.thisState))
+    }
+    this.onResponse {
+        goto(generalQuestion(it.text,thisState));
     }
 }
 
@@ -202,5 +237,8 @@ fun explainIncorrectAnswer(stateOrigin: State, index: Int, exerciseList: Array<I
     this.onResponse<UnwillingToContinue> {
 
         goto(UserCheerUp(this.thisState))
+    }
+    this.onResponse {
+        goto(generalQuestion(it.text,thisState));
     }
 }
