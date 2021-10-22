@@ -119,20 +119,20 @@ fun UserCheerUpExam(originState: State): State = state(Interaction) {
 
 
 fun switchModuleOption(module:String):State = state(Interaction){
-    val differentModules = availableModules.filter { it!=module }
-    onEntry {
-
-        furhat.ask("We can change to another module, for example, "+differentModules[0]+" or " +differentModules[1]+", would you like that?")
-    }
-    this.onResponse<Yes> {
-        furhat.gesture(Gestures.Smile(strength=0.5))
-        goto(choseModule(differentModules));
-    }
-    this.onNoResponse {
-        goto(choseModule(differentModules));
-    }
-    this.onResponse<No> {goto(frustratedUserFarewell)}
-    this.onResponse<UnwillingToContinue> {goto(frustratedUserFarewell)}
+//    val differentModules = availableModules.filter { it!=module }
+//    onEntry {
+//
+//        furhat.ask("We can change to another module, for example, "+differentModules[0]+" or " +differentModules[1]+", would you like that?")
+//    }
+//    this.onResponse<Yes> {
+//        furhat.gesture(Gestures.Smile(strength=0.5))
+//        goto(choseModule(differentModules));
+//    }
+//    this.onNoResponse {
+//        goto(choseModule(differentModules));
+//    }
+//    this.onResponse<No> {goto(frustratedUserFarewell)}
+//    this.onResponse<UnwillingToContinue> {goto(frustratedUserFarewell)}
 }
 
 fun choseModule(options:List<String>):State = state(Interaction){

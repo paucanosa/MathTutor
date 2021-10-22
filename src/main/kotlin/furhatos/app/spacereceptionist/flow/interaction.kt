@@ -4,6 +4,7 @@ import furhatos.app.spacereceptionist.flow.modules.BeginExam
 import furhatos.app.spacereceptionist.nlu.Confused
 import furhatos.app.spacereceptionist.nlu.ExamModule
 import furhatos.app.spacereceptionist.nlu.PracticeModule
+import furhatos.app.spacereceptionist.nlu.getSentiment
 import furhatos.nlu.common.*
 import furhatos.flow.kotlin.*
 import furhatos.gestures.*
@@ -21,10 +22,14 @@ val InitState: State = state(Interaction) {
         furhat.gesture(Gestures.Smile)
         furhat.ask("Are you ready?");
     }
-
+    this.onResponse{
+        var sentiment = getSentiment(it.text)
+        println(sentiment)
+    }
     this.onResponse<Yes> {
         furhat.say("Good!")
         goto(CheckingUserFromTheBeginning)
+
     }
 
     this.onResponse<No> {
