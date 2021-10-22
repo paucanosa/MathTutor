@@ -1,11 +1,7 @@
 
 package furhatos.app.spacereceptionist.flow
 
-import furhatos.app.spacereceptionist.flow.modules.BeginExam
-import furhatos.app.spacereceptionist.flow.modules.UserCheerUp
-import furhatos.app.spacereceptionist.flow.modules.addFillers
-import furhatos.app.spacereceptionist.flow.modules.generalQuestion
-import furhatos.app.spacereceptionist.flow.modules.isSadEmotion
+import furhatos.app.spacereceptionist.flow.modules.*
 import furhatos.app.spacereceptionist.nlu.*
 import furhatos.nlu.common.*
 import furhatos.flow.kotlin.*
