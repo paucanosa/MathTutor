@@ -28,6 +28,7 @@ val explanations = arrayOf(
 val BeginExplanation: State = state(Interaction) {
 
     onEntry {
+        furhat.gesture(LookAway, async = true)
         furhat.say("The division consist of distributing a group of things into equal parts. For example," +
                 "if you have 4 candies and you want to distribute them to 4 friends, if you want to make it equal for everyone," +
                 "you will give one candy to each friend. ");
@@ -37,6 +38,7 @@ val BeginExplanation: State = state(Interaction) {
     }
     this.onResponse<Yes> {
         furhat.gesture(Gestures.Smile)
+        furhat.gesture(LookAway, async = true)
         random(  {furhat.say("Good!") },
             { furhat.say("Great!") },
             { furhat.say("Awesome!")} )
@@ -44,6 +46,7 @@ val BeginExplanation: State = state(Interaction) {
     }
     this.onResponse<No> {
         furhat.gesture(Gestures.ExpressSad)
+        furhat.gesture(LookAway, async = true)
         furhat.say("Don't worry, I will use another example!");
 
         goto(AdditionalExplanation);
@@ -51,6 +54,7 @@ val BeginExplanation: State = state(Interaction) {
 
     this.onResponse<UnwillingToContinue> {
         furhat.gesture(Gestures.Thoughtful)
+        furhat.gesture(LookAway, async = true)
         goto(UserCheerUp(this.thisState))
     }
 }
@@ -62,17 +66,20 @@ var ExplanationUnderstood: State = state(Interaction){
 
     this.onResponse<Yes> {
         furhat.gesture(Gestures.Smile)
+        furhat.gesture(LookAway, async = true)
         furhat.say("Let's get started then!")
         goto(BeginExercises)
     }
 
     this.onResponse<No> {
         furhat.gesture(Gestures.Nod)
+        furhat.gesture(LookAway, async = true)
         furhat.say("Okay! I am afraid you need to practice a little bit before taking the exam. But if you want we can proceed to it now.")
         goto(BeginExam)
     }
     this.onResponse<UnwillingToContinue> {
         furhat.gesture(Gestures.ExpressSad)
+        furhat.gesture(LookAway, async = true)
         goto(UserCheerUp(this.thisState))
     }
 }
@@ -82,6 +89,7 @@ var AdditionalExplanation: State = state(Interaction){
         users.current.neededExplanations +=1
         val nextExplanation:Int = Random.nextInt(0,3)
         //TODO: We should not repeat the explanations, just read them all if necessary and skip to the exercise part.
+        furhat.gesture(LookAway, async = true)
         furhat.say(explanations[nextExplanation])
         random(
             { furhat.ask("Do you understand it now?") },
@@ -91,9 +99,11 @@ var AdditionalExplanation: State = state(Interaction){
     }
     this.onResponse<Yes> {
         furhat.gesture(Gestures.Smile)
+        furhat.gesture(LookAway, async = true)
         random(furhat.say("Good!"), furhat.say("Great!"), furhat.say("Awesome!"))
     }
     this.onResponse<No> {
+        furhat.gesture(LookAway, async = true)
         if(users.current.neededExplanations==5)
             furhat.say("Don't worry, let's start practicing and you will see it's not that difficult!")
         if(users.current.neededExplanations==3){
@@ -115,19 +125,24 @@ var AdditionalExplanation: State = state(Interaction){
 }
 var TakeDivisionQuestion: State = state(Interaction){
     onEntry {
+        furhat.gesture(LookAway, async = true)
         furhat.ask("You can just ask me any division problem")
     }
     this.onNoResponse {
+        furhat.gesture(LookAway, async = true)
         furhat.say("Let's try some math exercises and get you started with practicing.")
         goto(BeginExercises)
     }
     this.onResponse<Yes>{
+
         furhat.gesture(Gestures.Smile)
+        furhat.gesture(LookAway, async = true)
         furhat.say("Nice!")
         reentry()
     }
     this.onResponse<No> {
         furhat.gesture(Gestures.Nod)
+        furhat.gesture(LookAway, async = true)
         furhat.say("Alright! Let's try some math exercises and get you started with practicing.")
         goto(BeginExercises)
     }
@@ -142,12 +157,14 @@ var TakeDivisionQuestion: State = state(Interaction){
            val quotient : Int = dividend / divisor
             val remainder : Int = dividend.rem(divisor)
             furhat.gesture(Gestures.Nod)
+            furhat.gesture(LookAway, async = true)
             furhat.say { "The answer is $quotient with remainder of $remainder." }
             furhat.say("When you divide $dividend by $divisor, you can think of it like distributing $dividend apples for $divisor people evenly. In the end, everyone will get $quotient apples. And the remaining number of apple is $remainder.")
             furhat.say("Now, I believe you are ready for some practices!")
             goto(BeginExercises)
         }
         else{
+            furhat.gesture(LookAway, async = true)
             furhat.say { "For this lessen, we are solving division problems where both dividend and divisor are integers. Let's try again!" }
             reentry()
         }
