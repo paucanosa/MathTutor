@@ -5,6 +5,7 @@ import furhatos.app.spacereceptionist.flow.modules.BeginExam
 import furhatos.app.spacereceptionist.flow.modules.UserCheerUp
 import furhatos.app.spacereceptionist.flow.modules.addFillers
 import furhatos.app.spacereceptionist.flow.modules.generalQuestion
+import furhatos.app.spacereceptionist.flow.modules.isSadEmotion
 import furhatos.app.spacereceptionist.nlu.*
 import furhatos.nlu.common.*
 import furhatos.flow.kotlin.*
@@ -70,6 +71,11 @@ val EasyExercises: State = state(Interaction){
     }
     this.onResponse<Confused> {
         furhat.say("Don't worry. I will explain the solution to you.")
+        val oldValence = users.current.valence
+        val emotion = call(inferEmotion())
+        if (isSadEmotion(emotion as String) && oldValence > users.current.valence) {
+            goto(UserCheerUp(explainIncorrectAnswer(thisState, index, easy)))
+        }
         goto(explainIncorrectAnswer(thisState, index, easy))
     }
     this.onResponse<UnwillingToContinue> {
@@ -111,6 +117,11 @@ val MediumExercises: State = state(Interaction){
             furhat.gesture(Gestures.Shake)
             furhat.say("That is incorrect. The answer is " +  medium[index][2] +
                     " with remainder of " + medium[index][3] + ".")
+            val oldValence = users.current.valence
+            val emotion = call(inferEmotion())
+            if (isSadEmotion(emotion as String) && oldValence > users.current.valence) {
+                goto(UserCheerUp(explainIncorrectAnswer(thisState, index, medium)))
+            }
             goto(explainIncorrectAnswer(thisState, index, medium))
         }
     }
@@ -158,6 +169,11 @@ val HardExercises: State = state(Interaction){
             furhat.gesture(Gestures.Shake)
             furhat.say("That is incorrect. The answer is " +  hard[index][2] +
                     " with remainder of " + hard[index][3] + ".")
+            val oldValence = users.current.valence
+            val emotion = call(inferEmotion())
+            if (isSadEmotion(emotion as String) && oldValence > users.current.valence) {
+                UserCheerUp(explainIncorrectAnswer(thisState, index, hard))
+            }
             goto(explainIncorrectAnswer(thisState, index, hard))
         }
     }
