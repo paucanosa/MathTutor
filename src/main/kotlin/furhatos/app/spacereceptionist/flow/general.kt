@@ -46,7 +46,7 @@ val Interaction: State = state {
     onUserEnter(instant = true) {
         furhat.glance(it)
     }
-    onResponseFailed(instant = true) {
+    onResponseFailed() {
         furhat.say("Sorry, my speech recognizer is not working")
         delay(500)
         reentry()

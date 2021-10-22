@@ -22,10 +22,12 @@ val InitState: State = state(Interaction) {
         furhat.gesture(Gestures.Smile)
         furhat.ask("Are you ready?");
     }
-    this.onResponse{
-        var sentiment = getSentiment(it.text)
-        println(sentiment)
-    }
+    // use this to test CoreNLP classification of user's response
+//    this.onResponse{
+//        var sentiment = getSentiment(it.text)
+//        println(sentiment+ " "+it.text)
+//        reentry()
+//    }
     this.onResponse<Yes> {
         furhat.say("Good!")
         goto(CheckingUserFromTheBeginning)

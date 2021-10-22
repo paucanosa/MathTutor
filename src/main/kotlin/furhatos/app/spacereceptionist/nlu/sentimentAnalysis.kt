@@ -13,7 +13,6 @@ fun getSentiment(txt: String): String? {
     props.setProperty("annotators", "tokenize, ssplit, pos, lemma, parse, sentiment")
     val pipeline = StanfordCoreNLP(props)
 
-    val txt = "It is"
     val annotation = pipeline.process(txt)
     val sentences = annotation.get(SentencesAnnotation::class.java)
     for (sentence in sentences) {
