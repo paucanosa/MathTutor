@@ -30,15 +30,20 @@ val BeginExercises: State = state(Interaction) {
 
     }
     this.onResponse<MediumExercises> {
+        furhat.gesture(LookAway, async = true)
         furhat.say("Great")
         goto(MediumExercises)
     }
     this.onResponse<EasyExercises> {
+        furhat.gesture(LookAway, async = true)
         furhat.say("Good")
+
         goto(EasyExercises)
     }
     this.onResponse<HardExercises> {
+        furhat.gesture(LookAway, async = true)
         furhat.say("Alright")
+
         goto(HardExercises)
     }
     this.onResponse {
@@ -61,21 +66,26 @@ val EasyExercises: State = state(Interaction){
             random({furhat.say("Good!")}, {furhat.say("Great!")}, {furhat.say("Awesome!")})
             furhat.say("That is right, the correct answer is "+ easy[index][2] + "." +
                 "Now on to the medium level exercises")
+            furhat.gesture(LookAway, async = true)
             furhat.gesture(Gestures.Smile)
             goto(MediumExercises)
         }else{
             furhat.gesture(Gestures.Shake)
             furhat.say("That is incorrect. The answer is " +  easy[index][2] +".")
+            furhat.gesture(LookAway, async = true)
             goto(explainIncorrectAnswer(thisState, index, easy))
         }
     }
     this.onResponse<Confused> {
         furhat.say("Don't worry. I will explain the solution to you.")
+
+        furhat.gesture(LookAway, async = true)
         val oldValence = users.current.valence
         val emotion = call(inferEmotion())
         if (isSadEmotion(emotion as String) && oldValence > users.current.valence) {
             goto(UserCheerUp(explainIncorrectAnswer(thisState, index, easy)))
         }
+
         goto(explainIncorrectAnswer(thisState, index, easy))
     }
     this.onResponse<UnwillingToContinue> {
@@ -90,6 +100,7 @@ val MediumExercises: State = state(Interaction){
     val index = (0 .. medium.size-1).random()
     onEntry{
         furhat.gesture(Gestures.Thoughtful)
+        furhat.gesture(LookAway, async = true)
         furhat.ask("Try to solve this medium difficulty division problem. " +
                 "What is " + medium[index][0] + " divided by " + medium[index][1] + "? " +
                 "And what is the remainder?"
@@ -101,13 +112,14 @@ val MediumExercises: State = state(Interaction){
             if(answerInfo!!.remainder==Number(medium[index][3])){
                 furhat.gesture(Gestures.Nod)
             random({furhat.say("Good!")}, {furhat.say("Great!")}, {furhat.say("Awesome!")})
-
+                furhat.gesture(LookAway, async = true)
             furhat.say("That is right, the correct answer is "+ medium[index][2] + ". With remainder of " +
                    medium[index][3]+ ". Now on to the hard level exercises")
                 furhat.gesture(Gestures.Smile)
                 goto(HardExercises)
             }else{
                 furhat.gesture(Gestures.Shake)
+                furhat.gesture(LookAway, async = true)
                 furhat.say("You got the quotient right, which is "+ medium[index][2] + ". " +
                         "But the remainder should be " + medium[index][3] + "." )
                 reentry()
@@ -115,6 +127,7 @@ val MediumExercises: State = state(Interaction){
         }
         else{
             furhat.gesture(Gestures.Shake)
+            furhat.gesture(LookAway, async = true)
             furhat.say("That is incorrect. The answer is " +  medium[index][2] +
                     " with remainder of " + medium[index][3] + ".")
             val oldValence = users.current.valence
@@ -126,12 +139,13 @@ val MediumExercises: State = state(Interaction){
         }
     }
     this.onResponse<Confused> {
-
+        furhat.gesture(LookAway, async = true)
         furhat.say("Don't worry. I will explain the solution to you.")
         goto(explainIncorrectAnswer(thisState, index, medium))
     }
     this.onResponse<UnwillingToContinue> {
         furhat.gesture(Gestures.ExpressSad)
+        furhat.gesture(LookAway, async = true)
         goto(UserCheerUp(this.thisState))
     }
     this.onResponse {
@@ -143,6 +157,7 @@ val HardExercises: State = state(Interaction){
     val index = (0 until hard.size-1).random()
     onEntry{
         furhat.gesture(Gestures.Thoughtful)
+        furhat.gesture(LookAway, async = true)
         furhat.ask("Try to solve this hard difficulty division problem. " +
                 "What is " + hard[index][0] + " divided by " + hard[index][1] + "?" +
                 "And what is the remainder?"
@@ -157,11 +172,13 @@ val HardExercises: State = state(Interaction){
                 furhat.say("That is right, the correct answer is "+ hard[index][2] + ". With remainder of " +
                         hard[index][3]+ ". Now you can try taking the exam!")
                 furhat.gesture(Gestures.Smile)
+                furhat.gesture(LookAway, async = true)
                 goto(BeginExam)
             }else{
                 furhat.gesture(Gestures.Shake)
                 furhat.say("You got the quotient right, which is "+ hard[index][2] + ". " +
                         "But the remainder should be " + hard[index][3] + ".")
+                furhat.gesture(LookAway, async = true)
                 reentry()
             }
         }
@@ -169,16 +186,21 @@ val HardExercises: State = state(Interaction){
             furhat.gesture(Gestures.Shake)
             furhat.say("That is incorrect. The answer is " +  hard[index][2] +
                     " with remainder of " + hard[index][3] + ".")
+
+            furhat.gesture(LookAway, async = true)
+
             val oldValence = users.current.valence
             val emotion = call(inferEmotion())
             if (isSadEmotion(emotion as String) && oldValence > users.current.valence) {
                 UserCheerUp(explainIncorrectAnswer(thisState, index, hard))
             }
+
             goto(explainIncorrectAnswer(thisState, index, hard))
         }
     }
     this.onResponse<Confused> {
         furhat.say("Don't worry. I will explain the solution to you.")
+        furhat.gesture(LookAway, async = true)
         goto(explainIncorrectAnswer(thisState, index, hard))
     }
     this.onResponse<UnwillingToContinue> {
@@ -197,16 +219,19 @@ fun explainIncorrectAnswer(stateOrigin: State, index: Int, exerciseList: Array<I
                 exerciseList[index][0] + "people evenly. In the end, everyone will get "+ exerciseList[index][2]
         + " apples. And the remaining number of apple is " + exerciseList[index][3] +".")
         furhat.gesture(Gestures.Thoughtful)
+        furhat.gesture(LookAway, async = true)
         furhat.ask("Now, would you like to try another exercise again?")
     }
     this.onResponse<Yes> {
         furhat.gesture(Gestures.Smile)
+        furhat.gesture(LookAway, async = true)
         furhat.say("Great!")
         goto(stateOrigin)
     }
     this.onResponse<No> {
         furhat.gesture(Gestures.Nod)
         furhat.say("I can explain more on division and afterwards you can jump back to the exercise when you feel ready.")
+        furhat.gesture(LookAway, async = true)
         goto(BeginExplanation)
     }
     this.onResponse<UnwillingToContinue> {
