@@ -86,6 +86,11 @@ val InitialDataRetrieval:State = state(Interaction){
         furhat.ask("What's your name?");
 
     }
+
+    this.onReentry {
+        furhat.ask("Can I know your name please?")
+    }
+
     this.onResponse<PersonName> {
         users.current.name = it.intent.text;
         furhat.gesture(Gestures.Smile)
@@ -113,6 +118,7 @@ val InitialDataRetrieval:State = state(Interaction){
     }
     this.onResponse {
         goto(generalQuestion(it.text,thisState));
+
     }
 }
 

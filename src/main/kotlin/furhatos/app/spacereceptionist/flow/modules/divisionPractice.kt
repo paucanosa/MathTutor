@@ -3,6 +3,7 @@ package furhatos.app.spacereceptionist.flow
 
 import furhatos.app.spacereceptionist.flow.modules.BeginExam
 import furhatos.app.spacereceptionist.flow.modules.UserCheerUp
+import furhatos.app.spacereceptionist.flow.modules.addFillers
 import furhatos.app.spacereceptionist.flow.modules.generalQuestion
 import furhatos.app.spacereceptionist.nlu.*
 import furhatos.nlu.common.*
@@ -20,10 +21,10 @@ val BeginExercises: State = state(Interaction) {
 
     onEntry {
 
-        furhat.say("Before we start practicing, you need to know that the exercises are classified in three levels:" +
+        furhat.say(addFillers("Before we start practicing, you need to know that the exercises are classified in three levels:" +
                 " easy, medium and hard. Usually, we start by the easiest ones and keep increasing the difficulty. " +
                 "Once you think you have practiced enough, you can ask for an exam, in order to get proof that you have" +
-                "understood the division.")
+                "understood the division."))
         furhat.ask("Would you like to start by easy, medium or hard exercises?")
 
     }

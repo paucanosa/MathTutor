@@ -113,6 +113,8 @@ class DivisionQuestionInfo(var dividend : Number = Number(0),
         return listOf(
             "What is @dividend divided by @divisor",
             "@dividend divided by @divisor",
+            "What is @dividend / @divisor",
+            "@dividend / @divisor",
             "I have a math question")
     }
 

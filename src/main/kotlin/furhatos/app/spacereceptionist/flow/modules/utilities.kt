@@ -4,8 +4,10 @@ import furhatos.app.spacereceptionist.flow.Interaction
 import furhatos.app.spacereceptionist.flow.valence
 import furhatos.flow.kotlin.*
 import furhatos.gestures.BasicParams
+import furhatos.gestures.Gestures
 import furhatos.gestures.defineGesture
 import furhatos.nlu.common.No
+import furhatos.nlu.common.Yes
 import org.apache.commons.math3.distribution.NormalDistribution
 
 val FAILED_RESPONSES = listOf("Error", "No spoken result available", "Wolfram Alpha did not understand your input")
@@ -44,11 +46,21 @@ fun inferEmotion() = state {
 
 // State to conduct the query to the Wolframalpha API
 fun generalQuestion(inputQuest: String,stateOrigin: State): State = state(Interaction){
-    var generalQuestion = inputQuest
+    val BASE_URL = "https://api.wolframalpha.com/v1/spoken"
+    var question = inputQuest.replace("+", " plus ").replace(" ", "+")
+    var query = "$BASE_URL?i=$question&appid=$APP_ID"
+
     onEntry {
-        val BASE_URL = "https://api.wolframalpha.com/v1/spoken"
-        val question = generalQuestion.replace("+", " plus ").replace(" ", "+")
-        val query = "$BASE_URL?i=$question&appid=$APP_ID"
+        furhat.ask("Do you want me to find the answer to that?")
+    }
+
+    this.onResponse<Yes> {
+
+        // Filler speech and gesture
+        furhat.say(async = true) {
+            + "Okay let me think"
+            + Gestures.GazeAway
+        }
 
         val response = call {
             khttp.get(query).text
@@ -64,9 +76,37 @@ fun generalQuestion(inputQuest: String,stateOrigin: State): State = state(Intera
         furhat.say(response)
         furhat.say("Come on, let's continue with the lesson.")
         goto(stateOrigin)
-        // Return the response
-        //terminate(reply)
     }
+
+    this.onResponse<No> {
+        furhat.say("Come on, let's continue with the lesson then.")
+        goto(stateOrigin)
+    }
+
+    this.onResponse {
+
+        // Filler speech and gesture
+        furhat.say(async = true) {
+            + "Okay let me think"
+            + Gestures.GazeAway
+        }
+
+        val response = call {
+            khttp.get(query).text
+        } as String
+
+        // Reply to user depending on the returned response
+        val reply = when {
+            FAILED_RESPONSES.contains(response) -> {
+                "That's an interesting question"
+            }
+            else -> "$response"
+        }
+        furhat.say(response)
+        furhat.say("Come on, let's continue with the lesson.")
+        goto(stateOrigin)
+    }
+
 
     //onTime(TIMEOUT) {
       //  println("Issues connecting to Inference Server")
@@ -94,7 +134,7 @@ val LookAway = defineGesture("LookAway") {
 }
 
 // Random Filler Generator
-fun addFillers(sentence:String, percent:Double = 0.2): String{
+fun addFillers(sentence:String, percent:Double = 0.1): String{
 
     val sentEndings = listOf<String>(".","?","!")
 
@@ -108,9 +148,9 @@ fun addFillers(sentence:String, percent:Double = 0.2): String{
 
     for (idx in pos){
         if (idx == 0 || sentEndings.contains(parts[idx - 1].last().toString())){
-            parts.add(idx, "u:m")
+            parts.add(idx, "um")
         } else {
-            parts.add(idx, "u:h")
+            parts.add(idx, "uh")
         }
     }
 
