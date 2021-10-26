@@ -36,7 +36,7 @@ val BeginExam: State = state(Interaction) {
         goto(UserCheerUp(this.thisState))
     }
     this.onResponse {
-        goto(generalQuestion(it.text,thisState));
+        goto(catchSentiment(it.text, thisState))
     }
 }
 
@@ -68,7 +68,7 @@ val ExamEasyExercice: State = state(Interaction){
         goto(UserCheerUp(this.thisState))
     }
     this.onResponse {
-        goto(generalQuestion(it.text,thisState));
+        goto(catchSentiment(it.text, thisState))
     }
 }
 
@@ -100,7 +100,7 @@ val ExamMediumExercice: State = state(Interaction){
         goto(UserCheerUp(this.thisState))
     }
     this.onResponse {
-        goto(generalQuestion(it.text,thisState));
+        goto(catchSentiment(it.text, thisState))
     }
 }
 
@@ -132,7 +132,7 @@ val ExamHardExercice: State = state(Interaction){
         goto(UserCheerUp(this.thisState))
     }
     this.onResponse {
-        goto(generalQuestion(it.text,thisState));
+        goto(catchSentiment(it.text, thisState))
     }
 }
 

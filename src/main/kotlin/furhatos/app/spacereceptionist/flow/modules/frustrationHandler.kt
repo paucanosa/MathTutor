@@ -54,6 +54,9 @@ fun UserCheerUpExplanation(originState: State): State = state(Interaction) {
     }
     this.onResponse<No> {goto(switchModuleOption("Explanation"))}
     this.onResponse<UnwillingToContinue> {goto(switchModuleOption("Explanation"))}
+    this.onResponse {
+        goto(switchModuleOption("Explanation"))
+    }
 }
 
 fun UserCheerUpPractice(originState: State): State = state(Interaction) {
@@ -92,6 +95,8 @@ fun UserCheerUpPractice(originState: State): State = state(Interaction) {
     }
     this.onResponse<No> {goto(switchModuleOption("Practice"))}
     this.onResponse<UnwillingToContinue> {goto(switchModuleOption("Practice"))}
+        this.onResponse {goto(switchModuleOption("Practice"))}
+
 }
 
 fun UserCheerUpExam(originState: State): State = state(Interaction) {
@@ -127,6 +132,7 @@ fun UserCheerUpExam(originState: State): State = state(Interaction) {
     }
     this.onResponse<No> {goto(switchModuleOption("Exam"))}
     this.onResponse<UnwillingToContinue> {goto(switchModuleOption("Exam"))}
+    this.onResponse {goto(switchModuleOption("Exam"))}
 }
 
 
@@ -145,6 +151,7 @@ fun switchModuleOption(module:String):State = state(Interaction){
     }
     this.onResponse<No> {goto(frustratedUserFarewell)}
     this.onResponse<UnwillingToContinue> {goto(frustratedUserFarewell)}
+    this.onResponse {goto(frustratedUserFarewell)  }
 }
 
 fun choseModule(options:List<String>):State = state(Interaction){
@@ -172,6 +179,7 @@ fun choseModule(options:List<String>):State = state(Interaction){
         goto(BeginExam);
     }
     this.onResponse<UnwillingToContinue> {goto(frustratedUserFarewell)}
+    this.onResponse {goto(frustratedUserFarewell)}
 
 }
 val frustratedUserFarewell: State = state(Interaction) {

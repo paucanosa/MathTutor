@@ -7,8 +7,8 @@ import furhatos.util.*
 val Idle: State = state {
 
     init {
-        furhat.param.interruptableOnAsk = true
-        furhat.param.interruptableOnSay = true
+        furhat.param.interruptableOnAsk = false
+        furhat.param.interruptableOnSay = false
         furhat.setVoice(Language.ENGLISH_US, Gender.MALE)
 
 

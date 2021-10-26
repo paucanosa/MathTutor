@@ -43,7 +43,7 @@ val BeginExercises: State = state(Interaction) {
         goto(HardExercises)
     }
     this.onResponse {
-        goto(generalQuestion(it.text,thisState));
+        goto(catchSentiment(it.text, thisState))
     }
 
 }
@@ -88,7 +88,7 @@ val EasyExercises: State = state(Interaction){
         goto(UserCheerUp(this.thisState))
     }
     this.onResponse {
-        goto(generalQuestion(it.text,thisState));
+        goto(catchSentiment(it.text, thisState))
     }
 }
 
@@ -145,7 +145,7 @@ val MediumExercises: State = state(Interaction){
         goto(UserCheerUp(this.thisState))
     }
     this.onResponse {
-        goto(generalQuestion(it.text,thisState));
+        goto(catchSentiment(it.text, thisState))
     }
 }
 
@@ -204,7 +204,7 @@ val HardExercises: State = state(Interaction){
         goto(UserCheerUp(this.thisState))
     }
     this.onResponse {
-        goto(generalQuestion(it.text,thisState));
+        goto(catchSentiment(it.text, thisState))
     }
 }
 
@@ -235,6 +235,6 @@ fun explainIncorrectAnswer(stateOrigin: State, index: Int, exerciseList: Array<I
         goto(UserCheerUp(this.thisState))
     }
     this.onResponse {
-        goto(generalQuestion(it.text,thisState));
+        goto(catchSentiment(it.text, thisState))
     }
 }

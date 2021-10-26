@@ -1,6 +1,7 @@
 package furhatos.app.spacereceptionist.flow
 
 import furhatos.app.spacereceptionist.flow.modules.BeginExam
+import furhatos.app.spacereceptionist.flow.modules.UserCheerUp
 import furhatos.app.spacereceptionist.flow.modules.generalQuestion
 import furhatos.app.spacereceptionist.nlu.Confused
 import furhatos.app.spacereceptionist.nlu.ExamModule
@@ -52,11 +53,11 @@ val InitState: State = state(Interaction) {
     }
 
    this.onResponse {
-        goto(generalQuestion(it.text,thisState));
+       goto(catchSentiment(it.text, thisState))
    }
 }
 
-val CheckingUserFromTheBeginning:State = state(Interaction){
+val CheckingUserFromTheBeginning:State = state(parent=Interaction){
     onEntry {
 
 
@@ -76,7 +77,7 @@ val CheckingUserFromTheBeginning:State = state(Interaction){
     }
 
     this.onResponse {
-        goto(generalQuestion(it.text,thisState));
+        goto(catchSentiment(it.text, thisState))
     }
 }
 
@@ -96,7 +97,7 @@ val ChoosePracticeOrExam:State = state(Interaction){
         goto(BeginExam);
     }
     this.onResponse {
-        goto(generalQuestion(it.text,thisState));
+        goto(catchSentiment(it.text, thisState))
     }
 }
 
@@ -142,9 +143,25 @@ val InitialDataRetrieval:State = state(Interaction){
         }
     }
     this.onResponse {
-        goto(generalQuestion(it.text,thisState));
-
+        goto(catchSentiment(it.text, thisState))
     }
 }
+fun catchSentiment(txt:String, originalState: State): State = state(Interaction){
+    onEntry {
+        var sentiment = getSentiment(txt)
+        print("$sentiment $txt")
+        if (sentiment == "Positive") {
+            furhat.gesture(Gestures.BigSmile)
+            furhat.say("It is good to hear that.")
+            goto(originalState)
+        } else if (sentiment == "Negative") {
+            furhat.gesture(Gestures.ExpressSad)
+            goto(UserCheerUp(originalState))
+        } else
+            this.goto(generalQuestion(txt, originalState))
+    }
+}
+
+
 
 

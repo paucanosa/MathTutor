@@ -64,7 +64,7 @@ val BeginExplanation: State = state(Interaction) {
         goto(UserCheerUp(this.thisState))
     }
     this.onResponse {
-        goto(generalQuestion(it.text,thisState));
+        goto(catchSentiment(it.text, thisState))
     }
 }
 
@@ -92,7 +92,7 @@ var ExplanationUnderstood: State = state(Interaction){
         goto(UserCheerUp(this.thisState))
     }
     this.onResponse {
-        goto(generalQuestion(it.text,thisState));
+        goto(catchSentiment(it.text, thisState))
     }
 }
 
@@ -137,7 +137,7 @@ var AdditionalExplanation: State = state(Interaction){
         goto(UserCheerUp(this.thisState))
     }
     this.onResponse {
-        goto(generalQuestion(it.text,thisState));
+        goto(catchSentiment(it.text, thisState))
     }
 
 }
@@ -191,6 +191,6 @@ var TakeDivisionQuestion: State = state(Interaction){
         goto(UserCheerUp(this.thisState))
     }
     this.onResponse {
-        goto(generalQuestion(it.text,thisState));
+        goto(catchSentiment(it.text, thisState))
     }
 }
